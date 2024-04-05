@@ -21,3 +21,14 @@ Content-Type: application/json
 {
     "email": "wrongemail@gmail.com","password":"wrongpassword"
 }
+
+### Notification post
+POST http://localhost:3001/notification/post HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "Title #§","description": "Test descritráw9diawjdawdaw"
+}
+
+### Notification get all notifications
+GET http://localhost:3001/notification/get HTTP/1.1
