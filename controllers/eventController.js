@@ -13,6 +13,71 @@ const openDb = () => {
     return pool;
 }
 
+
+//create event 
+const createEvent = (req, res) => {
+  const eventData = req.body;
+  const sql = 'INSERT INTO events SET ?';
+
+  db.query(sql, eventData, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error creating event');
+    } else {
+      res.status(201).send('Event created successfully');
+    }
+  });
+};
+
+
+//update event 
+const updateEvent = (req, res) => {
+  const eventId = req.params.id;
+  const updatedEventData = req.body;
+  const sql = 'UPDATE events SET ? WHERE id = ?';
+
+  db.query(sql, [updatedEventData, eventId], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error updating event');
+    } else {
+      res.status(200).send('Event updated successfully');
+    }
+  });
+};
+
+//delete event 
+const deleteEvent = (req, res) => {
+  const eventId = req.params.id;
+  const sql = 'DELETE FROM events WHERE id = ?';
+
+  db.query(sql, eventId, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error deleting event');
+    } else {
+      res.status(200).send('Event deleted successfully');
+    }
+  });
+};
+
+
+//list event 
+const listEvents = (req, res) => {
+  const sql = 'SELECT * FROM events';
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error listing events');
+    } else {
+      res.status(200).json(results);
+    }
+  });
+};
+
+
+
 // Function to add a user to an event
 const joinEvent = async (req, res) => {
     const { userId, eventId } = req.body;
