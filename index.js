@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const { userRouter } = require('./routes/user');
-const { eventRoutes } = require('./routes/eventRoutes');
+const { userRouter } = require('./routes/user.js');
+const { eventRoutes } = require('./routes/eventRoutes.js');
 
 
 const port = 3001;
@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}))
 
 app.use('/user',userRouter);
-app.use('/api', eventRoutes); // Mounts event routes
+// app.use('/api', eventRoutes);
 
 app.listen(port,() => {
     console.log(`Server is listening on port ${port}`);
