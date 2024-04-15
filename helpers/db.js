@@ -11,7 +11,6 @@ const openDb = () => {
     return pool;
 }
 
-
 const query = async (sql, values = []) => {
     console.log('calling query')
     return new Promise(async (resolve, reject) => {
@@ -19,16 +18,16 @@ const query = async (sql, values = []) => {
             const pool = openDb();
 
             // Check if the 'user' table exists
-            const checkTableExistsSql = `SELECT EXISTS (
+            const checkIfUserTableExists = `SELECT EXISTS (
                 SELECT FROM information_schema.tables 
                 WHERE  table_schema = 'public'
                 AND    table_name   = 'user'
             );`;
-            const tableExistsResult = await pool.query(checkTableExistsSql);
-            const tableExists = tableExistsResult.rows[0].exists;
+            const userTableExistsResult = await pool.query(checkIfUserTableExists);
+            const userTableExists = userTableExistsResult.rows[0].exists;
 
             // If the 'user' table doesn't exist, create it
-            if (!tableExists) {
+            if (!userTableExists) {
                 const createTableSql = `
                     CREATE TABLE "user" (
                         id SERIAL PRIMARY KEY,
@@ -42,10 +41,34 @@ const query = async (sql, values = []) => {
                 await pool.query(createTableSql);
             }
 
+
+            
+            // Check if the 'events' table exists
+            const checkIfEventTableExists = `SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE  table_schema = 'public'
+                AND    table_name   = 'event'
+            );`;
+            const eventTableExistsResult = await pool.query(checkIfEventTableExists);
+            const eventTableExists = eventTableExistsResult.rows[0].exists;
+
+            // If the 'events' table doesn't exist, create it
+            if (!eventTableExists) {
+                const createTableSql = `
+                    CREATE TABLE "event" (
+                        id SERIAL PRIMARY KEY,
+                        title VARCHAR(100),
+                        description VARCHAR(100),
+                        totalMembers VARCHAR(100)
+                    );
+                `;
+                await pool.query(createTableSql);
+            }
+
             // Execute the original query
             const result = await pool.query(sql, values);
-            console.log('database connecting')
-            console.log(result.rows)
+            // console.log('database connecting')
+            // console.log(result.rows)
             resolve(result);
         } catch (error) {
             console.log('got error in query')
