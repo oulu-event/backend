@@ -1,8 +1,8 @@
 const express = require('express');
 const { query } = require('../helpers/db.js');
-const router = express.Router();
+const notificationRouter = express.Router();
 
-router.get('/notification/get', async (req, res) => {
+notificationRouter.get('/get', async (req, res) => {
   try {
     // Query notifications
     const result = await query('SELECT * FROM notification');
@@ -15,7 +15,7 @@ router.get('/notification/get', async (req, res) => {
 });
 
 // Route to create a new notification
-router.post('/notification/post', async (req, res) => {
+notificationRouter.post('/post', async (req, res) => {
     const { title, description } = req.body;
     if (!title || !description) {
       return res.status(400).json({ error: 'Title and description are required' });
@@ -35,5 +35,5 @@ router.post('/notification/post', async (req, res) => {
   });
 
 module.exports = {
-    router
+  notificationRouter
 }
