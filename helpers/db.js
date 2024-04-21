@@ -5,7 +5,7 @@ const openDb = () => {
         user: "postgres",
         host: "localhost",
         database: "event_manager",
-        password: "292511",
+        password: "root",
         port: 5432
     });
     return pool;

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { userRouter } = require('./routes/user.js');
 const { eventRouter } = require('./routes/events.js');
+const { searchRouter } = require('./routes/searchEvent.js');
 
 
 const port = 3001;
@@ -12,6 +13,7 @@ app.use(express.urlencoded({extended: false}))
 
 app.use('/user', userRouter);
 app.use('/events', eventRouter);
+app.use('/events', searchRouter);
 // app.use('/api', eventRoutes);
 
 app.listen(port,() => {
