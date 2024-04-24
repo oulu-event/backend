@@ -22,6 +22,26 @@ Content-Type: application/json
     "email": "wrongemail@gmail.com","password":"wrongpassword"
 }
 
+###Get events
+GET http://localhost:3001/events HTTP/1.1
+Content-Type: application/json
+
+###Add an Event
+POST http://localhost:3001/events/add HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "Test Event","description": "Test description", "totalMembers": "5"
+}
+
+###Search Events
+POST http://localhost:3001/events/search HTTP/1.1
+Content-Type: application/json
+
+{
+    "searchString": "test"
+}
+
 ### Notification post
 POST http://localhost:3001/notification/post HTTP/1.1
 Content-Type: application/json
