@@ -3,6 +3,7 @@ const cors = require('cors');
 const { userRouter } = require('./routes/user.js');
 const { eventRouter } = require('./routes/events.js');
 const { notificationRouter } = require('./routes/notifications');
+const { reviewsRouter } = require('./routes/reviews');
 const { searchRouter } = require('./routes/searchEvent.js');
 
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}))
 
 app.use('/notification',notificationRouter);
+app.use('/review',reviewsRouter);
 app.use('/user', userRouter);
 app.use('/events', eventRouter);
 app.use('/events', searchRouter);
