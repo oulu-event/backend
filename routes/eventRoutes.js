@@ -1,34 +1,21 @@
 // Import required modules
 const express = require('express');
-const router = express.Router();
+const upload = require('../helpers/storage');
+const {verifyToken} = require('../helpers/middleware');
 const eventController = require('../controllers/eventController');
-const commentController = require('../controllers/commentController');
+// const commentController = require('../controllers/commentController');
 
-// POST request to join an event
-router.post('/events/:eventId/join', eventController.joinEvent);
 
-// POST request to leave an event
-router.post('/events/:eventId/leave', eventController.leaveEvent);
-router.post('/events', eventController.createEvent);
-router.put('/events/:id', eventController.updateEvent);
-router.delete('/events/:id', eventController.deleteEvent);
-router.get('/events', eventController.listEvents);
+const eventRouter = express.Router();
 
-// COMMENT routers here:
+eventRouter.post('/events', verifyToken, upload.single('image'), eventController.createEvent);
+eventRouter.put('/events/:id', verifyToken, upload.single('image'), eventController.updateEvent);
+eventRouter.delete('/events/:id', verifyToken, eventController.deleteEvent);
+eventRouter.get('/events', eventController.listEvents);
+eventRouter.get('/join/:id',verifyToken, eventController.reqJoinEvent);
+eventRouter.get('/request/', verifyToken, eventController.allJoinRequest);
+eventRouter.get('/request/:id/:status', verifyToken, eventController.eventReqUpdate);
+eventRouter.get('/comments/:id', eventController.getComments);
+eventRouter.post('/comments', verifyToken, eventController.createComment);
 
-// POST request to create a comment on an event
-router.post('/events/:eventId/comments', commentController.createComment);
-
-// GET request to retrieve all comments for an event
-router.get('/events/:eventId/comments', commentController.getCommentsByEventId);
-
-// POST request to add a comment to a specific event
-router.post('/events/:eventId/comments', commentController.addComment);
-
-// GET request to retrieve all comments for a specific event
-router.get('/events/:eventId/comments', commentController.getCommentsForEvent);
-
-// DELETE request to delete a comment on an event
-router.delete('/events/:eventId/comments/:commentId', commentController.deleteComment);
-
-module.exports = router;
+module.exports = eventRouter;
