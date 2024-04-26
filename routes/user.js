@@ -1,88 +1,76 @@
 const express = require('express');
-const { query } = require('../helpers/db.js');
-const bcrypt = require('bcrypt');
+const { pool } = require('../helpers/db.js');
+const {encryptPassword, checkPassword, generateToken} = require('../helpers/authHelper.js');
+
 
 const userRouter = express.Router();
 
 userRouter.post("/login", async (req, res) => {
+    console.log('data : ', req.body)
+    const {email, password } = req.body;
+
+    // validation
+    if (!email || !password) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
     try {
-        const sql = 'select * from "user" where email=$1';
-        const result = await query(sql, [req.body.email]);
-        console.log('from login');
-        console.log(result.rows[0])
-        console.log('hased password is:', result.rows[0].password);
-        console.log('hased password is:', String(result.rows[0].password).trim());
-        console.log('type of password is:',typeof(result.rows[0].password));
-        console.log(req.body.password)
-        if (result.rowCount === 1) {
-            if(req.body.password === result.rows[0].password) {
-                console.log('login successfull')
-                const user = result.rows[0];
-                res.status(200).json({ "id": user.id, "email": user.email });
+        const client = await pool.connect();
+        
+        // Check if if any user exists
+        const userWithEmail = await client.query('SELECT * FROM users WHERE email = $1', [email]);
+        
+        if (userWithEmail.rows.length < 0) {
+            return res.status(400).json({ error: 'No user found' });
+        }else{
+            const user = userWithEmail.rows[0]
+            const passCheck = await checkPassword(password, user.password);
+            if(passCheck){
+                const token= await generateToken(user);
+                res.status(200).json({ message: 'User logged in successfully', token: token});
+            }else{
+                res.status(400).json({ message: 'Invalid credentials'});
             }
-            else {
-                console.log('login failed')
-                res.statusMessage = 'Invalid login';
-                res.status(401).json({ error: 'Invalid login' });
-            }
-            // bcrypt.compare(req.body.password, result.rows[0].password, (err, bcrypt_res) => {
-            //     if (!err) {
-            //         if (bcrypt_res === true) {
-            //             console.log('password is true');
-            //             const user = result.rows[0];
-            //             res.status(200).json({ "id": user.id, "email": user.email });
-            //         } else {
-            //             console.log('password is false');
-            //             console.log(bcrypt_res)
-            //             res.statusMessage = 'Invalid login';
-            //             res.status(401).json({ error: 'Invalid login' });
-            //         }
-            //     } else {
-            //         console.log('else error')
-            //         res.statusMessage = err;
-            //         res.status(500).json({ error: err });
-            //     }
-            // });
-        } else {
-            res.statusMessage = 'Invalid login';
-            res.status(401).json({ error: 'Invalid login' });
         }
     } catch (error) {
-        res.statusMessage = error;
-        res.status(500).json({ error: error });
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-userRouter.post("/register", async(req, res) => {
-    console.log('from register backend')
-    console.log('password in backedn is: ',req.body.password)
-    console.log('type of password is: ',typeof(req.body.password))
-    const salt = await bcrypt.genSalt(10);
-    bcrypt.hash(req.body.password, salt, async (err, hash) => {
-        // console.log('the has password is: ',hash)
-        // console.log('type of hash is: ',typeof(hash))
-        if(!err) {
-            console.log('no error:**********')
-            try {
-                const sql = 'insert into "user" (firstname, lastname, dob, email, password) values ($1,$2,$3,$4,$5) returning id';
-                console.log('first')
-                const result = await query(sql, [req.body.firstname, req.body.lastname, req.body.dob, req.body.email, req.body.password]);
-                console.log('second')
-                console.log(result.rows[0].id)
-                res.status(200).json({id: result.rows[0]});
-            } catch (error) {
-                console.log('got error in user.js')
-                console.log(error.message)
-                res.statusMessage = error;
-                res.status(500).json({error: error});
-            }
-        } else {
-            console.log('got error:**********')
-            console.log(err)
-            res.statusMessage = err;
-            res.status(500).json({error: err});
+userRouter.post("/register", async (req, res) => {
+    console.log('data : ', req.body)
+    const { firstname, lastname, dob, email, password } = req.body;
+
+    // validation
+    if (!firstname || !lastname || !dob || !email || !password) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    try {
+        const client = await pool.connect();
+        // Check if email is already registered
+        const userWithEmail = await client.query('SELECT * FROM users WHERE email = $1', [email]);
+        if (userWithEmail.rows.length > 0) {
+            return res.status(400).json({ error: 'Email already registered' });
         }
-    })
+
+        // Encrypt the password
+        const hashedPassword = await encryptPassword(password);
+
+        // Insert user into the database
+        const newUser = await client.query(
+            'INSERT INTO users (firstname, lastname, dob, email, password) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [firstname, lastname, dob, email, hashedPassword]
+        );
+        client.release();
+
+        // Respond with success message
+        res.status(201).json({ message: 'User registered successfully'});
+    } catch (error) {
+        console.error('Error registering user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 module.exports = {
