@@ -16,7 +16,7 @@ async function createEvent(req, res){
     
     // Insert event into the database
     const newEvent = await client.query(
-        'INSERT INTO event (name, location, description, datetime, photo, user_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+        'INSERT INTO events (name, location, description, datetime, photo, user_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
         [name, location, description, datetime, imagePath, req.user.id]
     );
     client.release();
@@ -44,14 +44,14 @@ async function updateEvent(req, res){
     const client = await pool.connect();
     
     // Check if event exist
-     const currentEvent = await client.query('SELECT * FROM event WHERE id = $1', [eventId]);
+     const currentEvent = await client.query('SELECT * FROM events WHERE id = $1', [eventId]);
      if (currentEvent.rows.length < 1) {
          return res.status(404).json({ error: 'Event not found' });
      }
 
     // update event into the database
     const newEvent = await client.query(
-        'UPDATE event SET name = $1, location = $2, description = $3, datetime = $4, photo = $5 WHERE id = $6 RETURNING *',
+        'UPDATE events SET name = $1, location = $2, description = $3, datetime = $4, photo = $5 WHERE id = $6 RETURNING *',
         [name, location, description, datetime, imagePath, eventId]
     );
     client.release();
@@ -71,7 +71,7 @@ async function deleteEvent(req, res){
     const client = await pool.connect();
     
     // Check if event exist
-    const currentEvent = await client.query('SELECT * FROM event WHERE id = $1', [eventId]);
+    const currentEvent = await client.query('SELECT * FROM events WHERE id = $1', [eventId]);
     if (currentEvent.rows.length < 1) {
         return res.status(404).json({ error: 'Event not found' });
     }
@@ -93,7 +93,7 @@ async function deleteEvent(req, res){
 //list event 
 async function listEvents(req, res){
   const { name, location } = req.query;
-  let query = 'SELECT * from event WHERE 1=1 '
+  let query = 'SELECT * from events WHERE 1=1 '
   const queryParams = [];
   if (name) {
       query += ' AND name LIKE LOWER ( $1 )';
@@ -145,7 +145,7 @@ async function reqJoinEvent(req, res){
     const client = await pool.connect();
     
     // Check if event exist
-    const currentEvent = await client.query('SELECT * FROM event WHERE id = $1', [eventId]);
+    const currentEvent = await client.query('SELECT * FROM events WHERE id = $1', [eventId]);
     if (currentEvent.rows.length <= 0) {
         return res.status(404).json({ error: 'Event not found' });
     }
@@ -232,7 +232,7 @@ async function getComments(req, res){
     const client = await pool.connect();
 
     // Check if event exist
-    const currentEvent = await client.query('SELECT * FROM event WHERE id = $1', [eventId]);
+    const currentEvent = await client.query('SELECT * FROM events WHERE id = $1', [eventId]);
     if (currentEvent.rows.length < 0) {
         return res.status(404).json({ error: 'Event not found' });
     }
