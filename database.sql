@@ -19,7 +19,7 @@ create table events (
 	name varchar(100),
 	location varchar(100),
 	description varchar(255),
-	datetime date,
+	datetime timestamp,
 	total_participants int,
 	photo varchar(100),
 	user_id int not null,

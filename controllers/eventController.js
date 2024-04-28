@@ -4,10 +4,10 @@ const {encryptPassword, checkPassword, generateToken} = require('../helpers/auth
 
 //create event 
 async function createEvent(req, res){
-  const { name, location, datetime, description } = req.body;
+  const { name, location, datetime, description, total_participants } = req.body;
 
   // validation
-  if (!name || !location || !datetime || !description) {
+  if (!name || !location || !datetime || !description || !total_participants) {
       return res.status(400).json({ error: 'All fields are required' });
   }
   const imagePath = req.file ? req.file.path : null;
@@ -16,8 +16,8 @@ async function createEvent(req, res){
     
     // Insert event into the database
     const newEvent = await client.query(
-        'INSERT INTO events (name, location, description, datetime, photo, user_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-        [name, location, description, datetime, imagePath, req.user.id]
+        'INSERT INTO events (name, location, description, datetime, total_participants, photo, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+        [name, location, description, datetime, total_participants, imagePath, req.user.id]
     );
     client.release();
 
@@ -33,10 +33,10 @@ async function createEvent(req, res){
 //update event 
 async function updateEvent(req, res){
   const eventId = req.params.id;
-  const { name, location, datetime, description } = req.body;
+  const { name, location, datetime, description, total_participants } = req.body;
 
   // validation
-  if (!name || !location || !datetime || !description) {
+  if (!name || !location || !datetime || !description || !total_participants) {
       return res.status(400).json({ error: 'All fields are required' });
   }
   const imagePath = req.file ? req.file.path : null;
@@ -51,8 +51,8 @@ async function updateEvent(req, res){
 
     // update event into the database
     const newEvent = await client.query(
-        'UPDATE events SET name = $1, location = $2, description = $3, datetime = $4, photo = $5 WHERE id = $6 RETURNING *',
-        [name, location, description, datetime, imagePath, eventId]
+        'UPDATE events SET name = $1, location = $2, description = $3, datetime = $4, total_participants = $5, photo = $6 WHERE id = $7 RETURNING *',
+        [name, location, description, datetime, total_participants, imagePath, eventId]
     );
     client.release();
 
