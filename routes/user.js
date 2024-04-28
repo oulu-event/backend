@@ -27,7 +27,7 @@ userRouter.post("/login", async (req, res) => {
             const passCheck = await checkPassword(password, user.password);
             if(passCheck){
                 const token= await generateToken(user);
-                res.status(200).json({ message: 'User logged in successfully', token: token});
+                res.status(200).json({ message: 'User logged in successfully', id:user.id, email:user.email, token: token});
             }else{
                 res.status(400).json({ message: 'Invalid credentials'});
             }

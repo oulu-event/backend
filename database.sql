@@ -1,9 +1,9 @@
-drop table if exists events;
-drop table if exists users;
-drop table if exists join_request;
-drop table if exists comments;
-drop table if exists notification;
-drop table if exists participants;
+drop table if exists events cascade;
+drop table if exists users cascade;
+drop table if exists join_request cascade;
+drop table if exists comments cascade;
+drop table if exists notification cascade;
+drop table if exists participants cascade;
 
 create table users (
 	id serial primary key,

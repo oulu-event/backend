@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/user', userRouter);
-app.use('/events', eventRouter);
+app.use(eventRouter);
 
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);

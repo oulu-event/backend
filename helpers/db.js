@@ -9,7 +9,7 @@ const pool = new Pool({
     database: process.env.DB_NAME,
     password: process.env.DB_PASS,
     port: process.env.DB_PORT,
-    ssl: true
+    //ssl: true
 });
 
 // const query = async (sql, values = []) => {
