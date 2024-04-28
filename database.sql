@@ -20,6 +20,7 @@ create table events (
 	location varchar(100),
 	description varchar(255),
 	datetime date,
+	total_participants int,
 	photo varchar(100),
 	user_id int not null,
 		constraint fk_user
@@ -43,6 +44,7 @@ create table join_request (
 create table comments (
 	id serial primary key,
 	content varchar(255),
+	datetime date,
 	event_id int not null,
 		constraint fk_event
 			foreign key(event_id)
@@ -57,6 +59,7 @@ create table notification (
 	id serial primary key,
 	title varchar(100),
 	description varchar(255),
+	datetime date,
 	user_id int not null,
 		constraint fk_user
 			foreign key(user_id)
