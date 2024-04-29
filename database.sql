@@ -4,6 +4,7 @@ drop table if exists join_request cascade;
 drop table if exists comments cascade;
 drop table if exists notification cascade;
 drop table if exists participants cascade;
+drop table if exists reviews cascade;
 
 create table users (
 	id serial primary key,
@@ -65,6 +66,22 @@ create table notification (
 		constraint fk_user
 			foreign key(user_id)
 				references users(id)
+);
+
+create table reviews (
+	id serial primary key,
+	title varchar(100),
+	description varchar(255),
+	rating NUMERIC(2,1) CHECK (rating >= 1 AND rating <= 5),
+	datetime date,
+	user_id int not null,
+		constraint fk_user
+			foreign key(user_id)
+				references users(id),
+	event_id int not null,
+		constraint fk_event
+			foreign key(event_id)
+				references events(id)
 );
 
 create table participants (

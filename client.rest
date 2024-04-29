@@ -65,10 +65,11 @@ POST http://localhost:3001/review/post HTTP/1.1
 Content-Type: application/json
 
 {
-    "user_id": 123,
-    "event_id": 456,
+    "title": "Review Title",
+    "description": "Review Description",
     "rating": 4.5,
-    "title": "Title 1",
-    "description": "Test descritráw9diawjdawdaw"
+    "datetime": "2024-04-29",
+    "user_id": 1,
+    "event_id": 789012
 }
 
