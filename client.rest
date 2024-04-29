@@ -87,3 +87,16 @@ Content-Type: application/json
     "event_id": 789012
 }
 
+### Update review
+PUT http://localhost:3001/review/update/2
+Content-Type: application/json
+
+{
+  "title": "Updated Title",
+  "description": "Updated Description",
+  "rating": 3,
+  "datetime": "2202-04-12"
+}
+
+### Delete review
+DELETE http://localhost:3001/review/delete/2
