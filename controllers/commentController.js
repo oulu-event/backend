@@ -60,13 +60,11 @@ const addComment = async (req, res) => {
     const result = await pool.query(queryText, [eventId, userId, text]);
 
     // Send a success message along with the added comment in the response
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "Comment added successfully",
-        comment: result.rows[0],
-      });
+    res.status(201).json({
+      success: true,
+      message: "Comment added successfully",
+      comment: result.rows[0],
+    });
   } catch (error) {
     console.error("Error adding comment:", error);
     res.status(500).json({ success: false, message: "Failed to add comment" });

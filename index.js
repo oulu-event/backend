@@ -1,4 +1,5 @@
 const express = require("express");
+require("dotenv").config();
 const cors = require("cors");
 const path = require("path");
 const upload = require("./helpers/storage");
@@ -7,7 +8,7 @@ const eventRouter = require("./routes/eventRoutes.js");
 const { notificationRouter } = require("./routes/notifications");
 const { reviewsRouter } = require("./routes/reviews");
 
-const port = 3001;
+const port = process.env.PORT || 3001;
 const app = express();
 app.use(cors());
 app.use(express.json());
