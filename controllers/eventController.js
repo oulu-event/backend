@@ -6,6 +6,8 @@ const {encryptPassword, checkPassword, generateToken} = require('../helpers/auth
 async function createEvent(req, res){
   const { name, location, datetime, description, total_participants } = req.body;
 
+  console.log('inside create event')
+
   // validation
   if (!name || !location || !datetime || !description || !total_participants) {
       return res.status(400).json({ error: 'All fields are required' });

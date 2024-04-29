@@ -20,7 +20,8 @@ create table events (
 	location varchar(100),
 	description varchar(255),
 	datetime timestamp,
-	total_participants int,
+	total_participants_allowed int,
+	total_participants_joined int,
 	photo varchar(100),
 	user_id int not null,
 		constraint fk_user
