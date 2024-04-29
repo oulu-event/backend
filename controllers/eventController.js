@@ -161,12 +161,10 @@ async function allJoinRequest(req, res) {
     client.release();
 
     // Respond with success message
-    res
-      .status(200)
-      .json({
-        message: "Join Request retrieved successfully",
-        data: joinRequests.rows,
-      });
+    res.status(200).json({
+      message: "Join Request retrieved successfully",
+      data: joinRequests.rows,
+    });
   } catch (error) {
     console.error("Error retrieving join request:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -298,12 +296,10 @@ async function getComments(req, res) {
     client.release();
 
     // Respond with success message
-    res
-      .status(200)
-      .json({
-        message: "Comments retrieved successfully",
-        data: comments.rows,
-      });
+    res.status(200).json({
+      message: "Comments retrieved successfully",
+      data: comments.rows,
+    });
   } catch (error) {
     console.error("Error retrieving comments:", error);
     res.status(500).json({ error: "Internal server error" });

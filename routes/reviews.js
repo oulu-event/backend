@@ -18,11 +18,9 @@ reviewsRouter.get("/get", async (req, res) => {
 reviewsRouter.post("/post", async (req, res) => {
   const { title, description, rating, datetime, user_id, event_id } = req.body;
   if (!user_id || !event_id || !title || !description || !rating || !datetime) {
-    return res
-      .status(400)
-      .json({
-        error: "User ID, event ID, title, description, and rating are required",
-      });
+    return res.status(400).json({
+      error: "User ID, event ID, title, description, and rating are required",
+    });
   }
 
   try {

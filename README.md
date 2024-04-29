@@ -4,13 +4,13 @@
 
 1. Create a `.env` file with your local database data. Use the template below when creating, replace the data with your own.
 
-   PORT = someport
-   DB_HOST = yourhost
-   DB_USER = youruser
-   DB_NAME = yourdb
-   DB_PASS = yourpassword
-   DB_PORT= yourdbport
-   SECRET_KEY= somekey
+   PORT = yourport (3000 for example)
+   DB_HOST = yourhost (localhost for example)
+   DB_USER = youruser (postgres for example)
+   DB_NAME = yourdb (event_manager for example)
+   DB_PASS = yourpassword (root for example)
+   DB_PORT= yourdbport (5000 for example)
+   SECRET_KEY= somekey (key2 for example)
 
 2. Run the command `npm install` in the command line to install all the required dependencies.
 
