@@ -1,15 +1,13 @@
-require('dotenv').config()
-const { Pool } = require('pg');
-
-
+require("dotenv").config();
+const { Pool } = require("pg");
 
 const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASS,
-    port: process.env.DB_PORT,
-    //ssl: true
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASS,
+  port: process.env.DB_PORT,
+  //ssl: true
 });
 
 // const query = async (sql, values = []) => {
@@ -20,7 +18,7 @@ const pool = new Pool({
 
 //             // Check if the 'user' table exists
 //             const checkIfUserTableExists = `SELECT EXISTS (
-//                 SELECT FROM information_schema.tables 
+//                 SELECT FROM information_schema.tables
 //                 WHERE  table_schema = 'public'
 //                 AND    table_name   = 'user'
 //             );`;
@@ -42,11 +40,9 @@ const pool = new Pool({
 //                 await pool.query(createTableSql);
 //             }
 
-
-            
 //             // Check if the 'events' table exists
 //             const checkIfEventTableExists = `SELECT EXISTS (
-//                 SELECT FROM information_schema.tables 
+//                 SELECT FROM information_schema.tables
 //                 WHERE  table_schema = 'public'
 //                 AND    table_name   = 'event'
 //             );`;
@@ -79,4 +75,4 @@ const pool = new Pool({
 //     });
 // }
 
-module.exports = {pool}
+module.exports = { pool };
