@@ -19,4 +19,4 @@
 
 # Other tools
 
-1. Prettier can be used to format the code to look better. Use `npm run prettier` if you want to format your code.
+1. `Prettier` can be used to format the code to look better. Use `npm run prettier` if you want to format your code.
