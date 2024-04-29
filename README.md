@@ -2,11 +2,15 @@
 
 # Steps to do before starting the project
 1) Create a `.env` file with your local database data. Use the template below when creating, replace the data with your own.
-      DB_USER = your user
-      DB_HOST = your host
-      DB_NAME = your DB name
-      DB_PASSWORD = your password
-      DB_PORT = your port
+           
+    PORT = someport
+    DB_HOST = yourhost
+    DB_USER = youruser
+    DB_NAME = yourdb
+    DB_PASS = yourpassword
+    DB_PORT= yourdbport
+    SECRET_KEY= somekey
+
 
 2) Run the command `npm install` in the command line to install all the required dependencies.
 
