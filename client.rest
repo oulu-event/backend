@@ -51,7 +51,10 @@ POST http://localhost:3001/notification/post HTTP/1.1
 Content-Type: application/json
 
 {
-    "title": "Title #§","description": "Test descritráw9diawjdawdaw"
+    "title": "Title",
+    "description": "Test description",
+    "datetime": "2201-04-12",
+    "user_id": "1"
 }
 
 ### Review get all reviews
@@ -65,7 +68,7 @@ Content-Type: application/json
     "user_id": 123,
     "event_id": 456,
     "rating": 4.5,
-    "title": "Title #§",
+    "title": "Title 1",
     "description": "Test descritráw9diawjdawdaw"
 }
 
