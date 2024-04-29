@@ -1,2 +1,4 @@
-# Ignore artifacts:
 README.md
+package-lock.json
+.prettier.cjs
+
