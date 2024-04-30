@@ -293,7 +293,7 @@ async function getComments(req, res) {
 
     // get comments from the database
     const comments = await client.query(
-      "SELECT * from comments where event_id= $1",
+      "SELECT comments.*, users.firstname FROM comments JOIN users ON comments.user_id = users.id WHERE comments.event_id = $1 ORDER BY comments.datetime ASC",
       [eventId],
     );
     client.release();
