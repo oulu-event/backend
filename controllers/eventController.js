@@ -89,6 +89,28 @@ async function updateEvent(req, res) {
   }
 }
 
+// get all the events of a particular user
+async function getEventOfParticularUser(req, res) {
+  const userId = req.params.id;
+  try {
+    const client = await pool.connect();
+
+    // get events from the database
+    const events = await client.query("SELECT * from events WHERE user_id = $1", [
+      userId,
+    ]);
+    client.release();
+
+    // Respond with success message
+    res
+      .status(200)
+      .json({ message: "Event retrieved successfully", data: events.rows });
+  } catch (error) {
+    console.error("Error retrieving event:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
 //delete event
 async function deleteEvent(req, res) {
   const eventId = req.params.id;
@@ -147,6 +169,30 @@ async function listEvents(req, res) {
     console.error("Error retrieving event:", error);
     res.status(500).json({ error: "Internal server error" });
   }
+}
+
+// particular request by user
+async function getAllRequestByUser(req, res) {
+  try {
+    let eventId = req.params.id;
+
+    const client = await pool.connect();
+
+    // get join requests from the database
+    // "SELECT * from join_request where event_id = $1",
+    const joinRequests = await client.query(
+      "SELECT join_request.*, users.*, events.* FROM join_request JOIN users ON join_request.user_id = users.id JOIN events ON join_request.event_id = events.id WHERE join_request.event_id = $1",
+      [eventId],
+    );
+    client.release();
+
+    // Respond with success message
+    res.status(200).json(joinRequests.rows);
+  } catch (error) {
+    console.error("Error retrieving join request:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+
 }
 
 //all join request
@@ -311,10 +357,12 @@ async function getComments(req, res) {
 
 module.exports = {
   createEvent,
+  getEventOfParticularUser,
   updateEvent,
   deleteEvent,
   listEvents,
   allJoinRequest,
+  getAllRequestByUser,
   reqJoinEvent,
   eventReqUpdate,
   getComments,
