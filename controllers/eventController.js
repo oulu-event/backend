@@ -7,13 +7,13 @@ const {
 
 //create event
 async function createEvent(req, res) {
-  const { name, location, datetime, description, total_participants } =
+  const { name, location, datetime, description, total_participants_allowed } =
     req.body;
 
   console.log("inside create event");
 
   // validation
-  if (!name || !location || !datetime || !description || !total_participants) {
+  if (!name || !location || !datetime || !description || !total_participants_allowed) {
     return res.status(400).json({ error: "All fields are required" });
   }
   const imagePath = req.file ? req.file.path : null;
@@ -22,13 +22,13 @@ async function createEvent(req, res) {
 
     // Insert event into the database
     const newEvent = await client.query(
-      "INSERT INTO events (name, location, description, datetime, total_participants, photo, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+      "INSERT INTO events (name, location, description, datetime, total_participants_allowed, photo, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
       [
         name,
         location,
         description,
         datetime,
-        total_participants,
+        total_participants_allowed,
         imagePath,
         req.user.id,
       ],
@@ -46,11 +46,11 @@ async function createEvent(req, res) {
 //update event
 async function updateEvent(req, res) {
   const eventId = req.params.id;
-  const { name, location, datetime, description, total_participants } =
+  const { name, location, datetime, description, total_participants_allowed } =
     req.body;
 
   // validation
-  if (!name || !location || !datetime || !description || !total_participants) {
+  if (!name || !location || !datetime || !description || !total_participants_allowed) {
     return res.status(400).json({ error: "All fields are required" });
   }
   const imagePath = req.file ? req.file.path : null;
@@ -68,13 +68,13 @@ async function updateEvent(req, res) {
 
     // update event into the database
     const newEvent = await client.query(
-      "UPDATE events SET name = $1, location = $2, description = $3, datetime = $4, total_participants = $5, photo = $6 WHERE id = $7 RETURNING *",
+      "UPDATE events SET name = $1, location = $2, description = $3, datetime = $4, total_participants_allowed = $5, photo = $6 WHERE id = $7 RETURNING *",
       [
         name,
         location,
         description,
         datetime,
-        total_participants,
+        total_participants_allowed,
         imagePath,
         eventId,
       ],
@@ -175,6 +175,8 @@ async function allJoinRequest(req, res) {
 async function reqJoinEvent(req, res) {
   const eventId = req.params.id;
 
+  console.log('from reqJoinEvent, userId:', req.user.id)
+
   try {
     const client = await pool.connect();
 
@@ -192,6 +194,7 @@ async function reqJoinEvent(req, res) {
       "SELECT * FROM join_request WHERE user_id = $1 AND event_id = $2",
       [req.user.id, eventId],
     );
+    console.log('checking user request:', checkReq.rows)
     if (checkReq.rows.length > 0) {
       return res.status(400).json({ error: "Already sent a join request" });
     }
@@ -259,8 +262,8 @@ async function createComment(req, res) {
   try {
     // Insert the comment into the database
     const queryText =
-      "INSERT INTO comments (event_id, user_id, content) VALUES ($1, $2, $3) RETURNING *";
-    const values = [event_id, req.user.id, content];
+      "INSERT INTO comments (event_id, user_id, content, datetime) VALUES ($1, $2, $3, $4) RETURNING *";
+    const values = [event_id, req.user.id, content, new Date()];
     const result = await pool.query(queryText, values);
 
     // Send the newly created comment in the response

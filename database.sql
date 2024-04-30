@@ -46,7 +46,7 @@ create table join_request (
 create table comments (
 	id serial primary key,
 	content varchar(255),
-	datetime date,
+	datetime timestamp,
 	event_id int not null,
 		constraint fk_event
 			foreign key(event_id)
