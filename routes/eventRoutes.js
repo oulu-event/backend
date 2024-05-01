@@ -22,12 +22,12 @@ eventRouter.put(
 eventRouter.get("/events/:id", eventController.getEventOfParticularUser);
 eventRouter.delete("/events/:id", verifyToken, eventController.deleteEvent);
 eventRouter.get("/events", eventController.listEvents);
+eventRouter.get("/events/:userId/:eventId", eventController.checkIfUserJoinedEvent);
 eventRouter.get("/join/:id", verifyToken, eventController.reqJoinEvent);
 eventRouter.get("/request/:id", eventController.getAllRequestByUser);
 eventRouter.get("/request/", verifyToken, eventController.allJoinRequest);
 eventRouter.get(
   "/request/:id/:status",
-  verifyToken,
   eventController.eventReqUpdate,
 );
 eventRouter.get("/comments/:id", eventController.getComments);

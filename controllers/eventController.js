@@ -171,6 +171,31 @@ async function listEvents(req, res) {
   }
 }
 
+// check if user joined the event
+async function checkIfUserJoinedEvent(req, res) {
+  const userId = req.params.userId;
+  const eventId = req.params.eventId;
+  try {
+    const client = await pool.connect();
+
+    // get events from the database
+    const events = await client.query(
+      "SELECT * from join_request WHERE user_id = $1 AND event_id = $2",
+      [userId, eventId],
+    );
+    client.release();
+
+    // Respond with success message
+    res
+      .status(200)
+      .json({ message: "Event retrieved successfully", data: events.rows });
+  } catch (error) {
+    console.error("Error retrieving event:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+
 // particular request by user
 async function getAllRequestByUser(req, res) {
   try {
@@ -265,12 +290,14 @@ async function eventReqUpdate(req, res) {
   const reqID = req.params.id;
   const status = req.params.status;
 
+  console.log('from backend eventReqUpdate:', reqID, status)
+
   try {
     const client = await pool.connect();
 
     // Check if request exist
     const currentReq = await client.query(
-      "SELECT * FROM join_request WHERE status = 0 AND id = $1",
+      "SELECT * FROM join_request WHERE id = $1",
       [reqID],
     );
     if (currentReq.rows.length <= 0) {
@@ -284,17 +311,17 @@ async function eventReqUpdate(req, res) {
     );
 
     // Save user to participant list
-    if (status == 1) {
-      const newParticipant = await client.query(
-        "INSERT INTO participants (event_id, user_id) VALUES ($1, $2) RETURNING *",
-        [currentReq.rows[0].event_id, req.user.id],
-      );
-    }
+    // if (status == 1) {
+    //   const newParticipant = await client.query(
+    //     "INSERT INTO participants (event_id, user_id) VALUES ($1, $2) RETURNING *",
+    //     [currentReq.rows[0].event_id, req.user.id],
+    //   );
+    // }
 
     client.release();
 
     // Respond with success message
-    res.status(200).json({ message: "Join request processed successfully" });
+    res.status(200).json({ message: "Join request processed successfully", data: newEvent.rows});
   } catch (error) {
     console.error("Error updating request status:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -361,6 +388,7 @@ module.exports = {
   updateEvent,
   deleteEvent,
   listEvents,
+  checkIfUserJoinedEvent,
   allJoinRequest,
   getAllRequestByUser,
   reqJoinEvent,
