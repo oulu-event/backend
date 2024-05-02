@@ -231,7 +231,7 @@ async function getAllRequestByUser(req, res) {
     // get join requests from the database
     // "SELECT * from join_request where event_id = $1",
     const joinRequests = await client.query(
-      "SELECT join_request.*, users.*, events.* FROM join_request JOIN users ON join_request.user_id = users.id JOIN events ON join_request.event_id = events.id WHERE join_request.event_id = $1",
+      "SELECT join_request.*, users.*, events.*, join_request.id as request_id FROM join_request JOIN users ON join_request.user_id = users.id JOIN events ON join_request.event_id = events.id WHERE join_request.event_id = $1",
       [eventId],
     );
     client.release();
