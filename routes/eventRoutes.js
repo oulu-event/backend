@@ -19,6 +19,7 @@ eventRouter.put(
   upload.single("image"),
   eventController.updateEvent,
 );
+eventRouter.get("/members/:id", eventController.getMembersOfEvent);
 eventRouter.get("/events/:id", eventController.getEventOfParticularUser);
 eventRouter.delete("/events/:id", verifyToken, eventController.deleteEvent);
 eventRouter.get("/events", eventController.listEvents);
