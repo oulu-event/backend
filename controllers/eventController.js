@@ -5,6 +5,31 @@ const {
   generateToken,
 } = require("../helpers/authHelper.js");
 
+// get all members of that event
+async function getMembersOfEvent(req, res) {
+  const eventId = req.params.id;
+  try {
+    const client = await pool.connect();
+
+    // get members from the database
+    const members = await client.query(
+      "SELECT users.* FROM join_request JOIN users ON join_request.user_id = users.id WHERE join_request.event_id = $1",
+      [eventId],
+    );
+    client.release();
+
+    // Respond with success message
+    res.status(200).json({
+      message: "Members retrieved successfully",
+      data: members.rows,
+    });
+  } catch (error) {
+    console.error("Error retrieving members:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+
+}
+
 //create event
 async function createEvent(req, res) {
   const { name, location, datetime, description, total_participants_allowed } =
@@ -383,6 +408,7 @@ async function getComments(req, res) {
 }
 
 module.exports = {
+  getMembersOfEvent,
   createEvent,
   getEventOfParticularUser,
   updateEvent,
