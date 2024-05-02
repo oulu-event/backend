@@ -21,7 +21,9 @@ eventRouter.put(
 );
 eventRouter.get("/members/:id", eventController.getMembersOfEvent);
 eventRouter.get("/events/:id", eventController.getEventOfParticularUser);
-eventRouter.delete("/events/:id", verifyToken, eventController.deleteEvent);
+eventRouter.get("/events/joined/:id", eventController.getEventsJoinedByUser);
+eventRouter.get("/events/leave/:eventId/:userId", eventController.leaveEvent);
+eventRouter.get("/events/delete/:id", eventController.deleteEvent);
 eventRouter.get("/events", eventController.listEvents);
 eventRouter.get("/events/:userId/:eventId", eventController.checkIfUserJoinedEvent);
 eventRouter.get("/join/:id", verifyToken, eventController.reqJoinEvent);

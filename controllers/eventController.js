@@ -136,9 +136,33 @@ async function getEventOfParticularUser(req, res) {
   }
 }
 
-//delete event
-async function deleteEvent(req, res) {
-  const eventId = req.params.id;
+// get all the events joined by a particular user
+async function getEventsJoinedByUser(req, res) {
+  const userId = req.params.id;
+  try {
+    const client = await pool.connect();
+
+    // get events from the database
+    const events = await client.query(
+      "SELECT events.*, join_request.id as request_id, join_request.user_id as user_id, join_request.event_id as event_id, join_request.status as request_status FROM join_request JOIN events ON join_request.event_id = events.id WHERE join_request.user_id = $1",
+      [userId],
+    );
+    client.release();
+
+    // Respond with success message
+    res
+      .status(200)
+      .json({ message: "Event retrieved successfully", data: events.rows });
+  } catch (error) {
+    console.error("Error retrieving event:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+// Leave the event
+async function leaveEvent(req, res) {
+  const eventId = req.params.eventId;
+  const userId = req.params.userId;
   try {
     const client = await pool.connect();
 
@@ -152,9 +176,47 @@ async function deleteEvent(req, res) {
     }
 
     // delete event from the database
-    const newEvent = await client.query("DELETE FROM event WHERE id = $1", [
+    const newEvent = await client.query(
+      "DELETE FROM join_request WHERE event_id = $1 AND user_id = $2",
+      [eventId, userId],
+    );
+    client.release();
+
+    // Respond with success message
+    res.status(200).json({ message: "Event left successfully" });
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+
+}
+
+//delete event
+async function deleteEvent(req, res) {
+  const eventId = req.params.id;
+  console.log('inside delete event:', eventId)
+  try {
+    const client = await pool.connect();
+
+    // Check if event exist
+    const currentEvent = await client.query(
+      "SELECT * FROM events WHERE id = $1",
+      [eventId],
+    );
+    if (currentEvent.rows.length < 1) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    // delete event from the events table
+    const newEvent = await client.query("DELETE FROM events WHERE id = $1", [
       eventId,
     ]);
+
+    const newEvent2 = await client.query(
+      "DELETE FROM join_request WHERE event_id = $1",
+      [eventId],
+    );
+
     client.release();
 
     // Respond with success message
@@ -411,6 +473,8 @@ module.exports = {
   getMembersOfEvent,
   createEvent,
   getEventOfParticularUser,
+  getEventsJoinedByUser,
+  leaveEvent,
   updateEvent,
   deleteEvent,
   listEvents,
